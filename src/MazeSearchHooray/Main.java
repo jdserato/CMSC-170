@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 /**
- * Created by Serato, Jay Vince on September 24, 2017.
+ * Created by Serato, Jay Vince, Hernandez, Danielle, and Acal, Winnah Gwen on September 24, 2017.
  */
 public class Main {
     private static Node[][] maze = new Node[10][22];
@@ -106,13 +106,6 @@ public class Main {
                 }
             }
         }
-
-        for (int i = 0; i < 10; i++) {
-            for (int j = 0; j < 22; j++) {
-                System.out.print(maze[i][j]);
-            }
-            System.out.println();
-        }
     }
 
     static private Node adjacencySearch(Node current, Node goal) {
@@ -125,8 +118,6 @@ public class Main {
                     inspectedNode.setH((Math.abs(inspectedNode.getRow() - goal.getRow()) + Math.abs(inspectedNode.getCol() - goal.getCol())) * 10);
                     inspectedNode.setParent(current);
                     openList.add(inspectedNode);
-                    System.out.println(inspectedNode.getParent());
-                    System.out.println(" F = " + inspectedNode.getF());
                 } else if (inspectedNode == goal) {
                     goal.setParent(current);
                     openList.add(goal);
@@ -146,7 +137,6 @@ public class Main {
         openList.remove(candidateNode);
         closedList.add(candidateNode);
         candidateNode.setVisited(true);
-        System.out.println("candidate node's parent is " + candidateNode.getParent());
 
         return candidateNode;
 
