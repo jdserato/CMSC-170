@@ -34,7 +34,9 @@ public class Node {
 
     public void setVisited(boolean visited) {
         this.visited = visited;
-        content = '?';
+        if (content != 'P') {
+            content = '?';
+        }
     }
 
     public int getRow() {
