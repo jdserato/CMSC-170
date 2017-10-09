@@ -14,6 +14,10 @@ public class MazeSolver extends JFrame {
     private JTextArea whichOfTheFollowingTextArea;
     private JTextArea whichPartWouldYouTextArea;
     private JButton button1;
+    private JButton button2;
+    private JButton button3;
+    private JButton button4;
+    private JButton button5;
 
     MazeSolver() {
         setVisible(true);
