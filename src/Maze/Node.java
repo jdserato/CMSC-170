@@ -4,6 +4,7 @@ package src.Maze;
  * Created by Serato, Jay Vince on September 24, 2017.
  */
 
+//Comment
 public class Node {
     private boolean visited = false;
     private char content;
