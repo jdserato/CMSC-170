@@ -37,7 +37,6 @@ public class Main {
         switch (part) {
             case 1:
                 System.out.println("Which of the following mazes would you want me to solve:" +
-                        "\n\t0. Test Maze [7 x 7]" +
                         "\n\t1. Tiny Maze [7 x 7]" +
                         "\n\t2. Small Maze [10 x 22]" +
                         "\n\t3. Medium Maze [18 x 36]"+
@@ -67,11 +66,7 @@ public class Main {
          */
         String filename = "";
         try {
-            if (specPart == 0 && part == 1) {
-                filename = "testMaze.lay.txt";
-                row = 7;
-                col = 7;
-            }else if (specPart == 1 && part == 1) {
+            if (specPart == 1 && part == 1) {
                 filename = "tinyMaze.lay.txt";
                 row = 7;
                 col = 7;
