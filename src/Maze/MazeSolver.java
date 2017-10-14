@@ -18,6 +18,8 @@ public class MazeSolver extends JFrame {
     private JButton button3;
     private JButton button4;
     private JButton button5;
+    private JButton manhattanDistanceButton;
+    private JButton straightLineDistanceButton;
 
     MazeSolver() {
         setVisible(true);
