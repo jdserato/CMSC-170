@@ -31,9 +31,12 @@ public class Main {
         /*
           The following code will ask the user for "part", "specPart", and method.
          */
-        boolean error;
+        boolean error = false;
         do {
-            error = false;
+            if (error) {
+                System.out.println("Invalid input.");
+                error = false;
+            }
             System.out.println("Which part would you want me to solve:" +
                     "\n\t1. Part 1: Basic Path Finding" +
                     "\n\t2. Part 2: Search with Multiple Goals");
@@ -41,17 +44,19 @@ public class Main {
                 int input = sc.nextInt();
                 partBPF = input == 1;
                 if (input > 2 || input < 1) {
-                    System.out.println("Invalid input.");
                     error = true;
                 }
             } catch (InputMismatchException e) {
-                System.out.println("Invalid input.");
                 error = true;
+                sc.next();
             }
         } while (error);
         if (partBPF) {
             do {
-                error = false;
+                if (error) {
+                    System.out.println("Invalid input.");
+                    error = false;
+                }
                 System.out.println("Which of the following mazes would you want me to solve:" +
                         "\n\t1. Tiny Maze [7 x 7]" +
                         "\n\t2. Small Maze [10 x 22]" +
@@ -61,17 +66,19 @@ public class Main {
                 try {
                     specPart = sc.nextInt();
                     if (specPart < 1 || specPart > 5) {
-                        System.out.println("Invalid input.");
                         error = true;
                     }
                 } catch (InputMismatchException e) {
-                    System.out.println("Invalid input.");
                     error = true;
+                    sc.next();
                 }
             } while (error);
         } else {
             do {
-                error = false;
+                if (error) {
+                    System.out.println("Invalid input.");
+                    error = false;
+                }
                 System.out.println("Which of the following searches would you want me to solve:" +
                         "\n\t1. Small Search [5 x 20]" +
                         "\n\t2. Tricky Search [7 x 20]" +
@@ -80,29 +87,29 @@ public class Main {
                 try {
                     specPart = sc.nextInt();
                     if (specPart < 1 || specPart > 4) {
-                        System.out.println("Invalid input.");
                         error = true;
                     }
                 } catch (InputMismatchException e) {
-                    System.out.println("Invalid input.");
                     error = true;
+                    sc.next();
                 }
             } while (error);
         }
         do {
-            error = false;
+            if (error) {
+                System.out.println("Invalid input.");
+                error = false;
+            }
             System.out.println("Method of Solving the maze:" +
                     "\n\t1. Part 1: Manhattan Distance" +
                     "\n\t2. Part 2: Straight Line Distance");
             try {
                 int input = sc.nextInt();
                 if (input < 1 || input > 2) {
-                    System.out.println("Invalid input.");
                     error = true;
                 }
                 methodMD = input == 1;
             } catch (InputMismatchException e) {
-                System.out.println("Invalid input.");
                 error = true;
             }
         } while (error);
