@@ -188,9 +188,7 @@ public class Main {
         if (partBPF) { // Part 1 is defined as Basic Path Finding.
             goal = goals.remove(0); // There is only one goal in Part 1, thus only extracting the index 0 of goals.
             while (current != goal) {
-                if (current.getContent() != 'P') {
-                    current.setVisited(true);
-                }
+                current.setVisited(true);
                 current = adjacencySearch(current, goal, methodMD);
             }
 
