@@ -190,6 +190,9 @@ public class Main {
 
         if (partBPF) { // Part 1 is defined as Basic Path Finding.
             goal = goals.remove(0); // There is only one goal in Part 1, thus only extracting the index 0 of goals.
+            closedList.add(current);
+            expandedNode++;
+            frontier++;
             while (current != goal) {
                 current.setVisited(true);
                 current = adjacencySearch(current, methodMD);
@@ -213,6 +216,9 @@ public class Main {
         } else { // Part 2 is defined as Search with Multiple Goals.
             while (!goals.isEmpty()) {
                 current.setContent('P');
+                closedList.add(current);
+                expandedNode++;
+                frontier++;
                 do {
                     // The code will find the nearest goal.
                     for (Node g : goals) {
@@ -253,8 +259,6 @@ public class Main {
                         }
                     }
                     current = adjacencySearch(current, methodMD);
-                    System.out.println("Current: [" + current.getRow() + ", " + current.getCol() + "].");
-                    System.out.println("Goal: [" + goal.getRow() + ", " + goal.getCol() + "].");
                     printMaze(true);
                 } while (current != goal);
                 /*
@@ -322,6 +326,8 @@ public class Main {
                     } else if (inspectedNode == goal) { // If the adjacent node ("inspectedNode") is the goal...
                         inspectedNode.setParent(current);
                         goals.remove(goal);
+                        closedList.add(inspectedNode);
+                        expandedNode++;
                         frontier++;
                         return goal;
                     } else if (inspectedNode.getContent() == '.' || goals.contains(inspectedNode) || goals.contains(current)) {
@@ -332,10 +338,13 @@ public class Main {
                         if (inspectedNode.getContent() == '.' || goals.contains(inspectedNode)) {
                             goals.remove(inspectedNode);
                             goal = inspectedNode;
+                            closedList.add(inspectedNode);
                         } else {
                             goals.remove(current);
+                            closedList.add(current);
                             goal = current;
                         }
+                        expandedNode++;
                         frontier++;
                         return goal;
                     }
