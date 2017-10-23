@@ -17,7 +17,9 @@ public class Main {
     private static ArrayList<Node> closedList = new ArrayList<>();
     private static Scanner sc = new Scanner(System.in); // The scanner "sc" will ask the user for input from the System console.
     private static int row = 0, col = 0;
+    private static int pathCost = 0, expandedNode = 0, frontier = 0;
     private static ArrayList<Node> goals = new ArrayList<>(); // The "goals" are a collection of the pointer of the goals.
+    private static Node goal;
 
     public static void main(String[] args) {
         Node current = null; // The "current" will be used as a pointer in the maze
@@ -77,6 +79,8 @@ public class Main {
                     System.out.println("Invalid input.");
                     error = false;
                 }
+                System.out.println("Part 2 is somehow complex. The program will print every step of the state. The question mark (?) shows he closed list of the particular state. The asterisk (*) shows the path from P to ..");
+                System.out.println("To show directly in fast-forward, long-press the [ENTER] key.");
                 System.out.println("Which of the following searches would you want me to solve:" +
                         "\n\t1. Small Search [5 x 20]" +
                         "\n\t2. Tricky Search [7 x 20]" +
@@ -184,12 +188,11 @@ public class Main {
             e.printStackTrace();
         }
 
-        Node goal = null;
         if (partBPF) { // Part 1 is defined as Basic Path Finding.
             goal = goals.remove(0); // There is only one goal in Part 1, thus only extracting the index 0 of goals.
             while (current != goal) {
                 current.setVisited(true);
-                current = adjacencySearch(current, goal, methodMD);
+                current = adjacencySearch(current, methodMD);
             }
 
             /**
@@ -198,6 +201,7 @@ public class Main {
             while (current != null && current.getContent() != 'P') { // This code will backtrack from the goal to the starting point using each node's parent as guide.
                 current.setContent('.');
                 current = current.getParent();
+                pathCost++;
             }
             for (int i = 0; i < row; i++) {
                 for (int j = 0; j < col; j++) {
@@ -206,10 +210,7 @@ public class Main {
                     }
                 }
             }
-
-
         } else { // Part 2 is defined as Search with Multiple Goals.
-            int goalNum = 0;
             while (!goals.isEmpty()) {
                 current.setContent('P');
                 do {
@@ -221,10 +222,6 @@ public class Main {
                             g.setH(Math.max((Math.abs(current.getRow() - g.getRow())), Math.abs(current.getCol() - g.getCol())));
                         }
                     }
-                    System.out.print("Goals are");
-                    for (Node g : goals) {
-                        System.out.print("[" + g.getRow() + ", " + g.getCol() + "], ");
-                    }
                     int nearestH = goals.get(0).getH();
                     Node nearest = goals.get(0);
                     try {
@@ -235,10 +232,9 @@ public class Main {
                             }
                         }
                     } catch (ConcurrentModificationException e) {
-                        // do fucking nothing
+                        // do nothing
                     }
                     if (goal == null) {
-                        System.out.println("My goal is null.");
                         goal = nearest;
                         openList = new ArrayList<>();
                         closedList = new ArrayList<>();
@@ -249,7 +245,6 @@ public class Main {
                             }
                         }
                     } else if (goal != nearest) {
-                        System.out.println("My original goal was " + goal.getRow() + ", " + goal.getCol() + ", but I changed to " + nearest.getRow() + ", " + nearest.getCol());
                         if (goal.getContent() == '.' && goal.getContent() != 'P') {
                             if (!goals.contains(goal)) {
                                 goals.add(goal);
@@ -257,9 +252,10 @@ public class Main {
                             goal = nearest;
                         }
                     }
-                    current = adjacencySearch(current, goal, methodMD);
+                    current = adjacencySearch(current, methodMD);
+                    System.out.println("Current: [" + current.getRow() + ", " + current.getCol() + "].");
+                    System.out.println("Goal: [" + goal.getRow() + ", " + goal.getCol() + "].");
                     printMaze(true);
-                    System.out.println("goal is [" + goal.getRow() + ", " + goal.getCol() + "].");
                 } while (current != goal);
                 /*
                   The following code lines will clean up the maze to only reflect the path instead of the closed list.
@@ -267,6 +263,7 @@ public class Main {
                 while (current != null) { // This code will backtrack from the goal to the starting point using each node's parent as guide.
                     current.setContent('*');
                     current = current.getParent();
+                    pathCost++;
                 }
                 for (int i = 0; i < row; i++) {
                     for (int j = 0; j < col; j++) {
@@ -289,28 +286,28 @@ public class Main {
                     g.setContent('.');
                 }
                 current = goal;
-                System.out.println("Goal [" + goal.getCol() + ", " + goal.getRow() + "] has been removed.");
                 goal = null;
-                //goals.remove(goal);
             }
         }
         printMaze(false);
+        System.out.println("Path Cost: " + pathCost);
+        System.out.println("Expanded Node: " + expandedNode);
+        System.out.println("Size of Frontier: " + frontier);
     }
 
     /**
      * The function adjacencySearch will not only find and include the "current" node's adjacent node to the open list
      * but also provides the next current node based on the least F in the open list and move it to the closed list.
      * @param current is the current node to be inspected.
-     * @param goal is a pointer to the goal.
      * @param methodMD is defined to either use the Manhattan Distance (1) or the Straight Line Distance (2) as to find H.
      * @return the next current Node.
      */
-    static private Node adjacencySearch(Node current, Node goal, boolean methodMD) {
+    static private Node adjacencySearch(Node current, boolean methodMD) {
         for (int i = -1; i < 2; i++) {
             for (int j = -1; j < 2; j++) {
                 if ((i == 0 && j != 0) || (i != 0 && j == 0)) {
                     Node inspectedNode = maze[current.getRow() + i][current.getCol() + j];
-                    if (!inspectedNode.isVisited() && !(inspectedNode instanceof Wall) && !openList.contains(inspectedNode) && inspectedNode != goal) { // If the adjacent node ("inspectedNode") is not the goal...
+                    if (!goals.contains(inspectedNode) && !goals.contains(current) && !inspectedNode.isVisited() && !(inspectedNode instanceof Wall) && !openList.contains(inspectedNode) && inspectedNode != goal && inspectedNode.getContent() != '.') { // If the adjacent node ("inspectedNode") is not the goal...
                         inspectedNode.setG(current.getG() + 1); // G is defined as the distance or cost from the starting point ("P") to the node. For easier referencing, we use the current's G and add it to the unit cost (1).
                         if (methodMD) { // if Manhattan Distance should be used...
                             inspectedNode.setH(Math.abs(inspectedNode.getRow() - goal.getRow()) + Math.abs(inspectedNode.getCol() - goal.getCol()));
@@ -318,12 +315,28 @@ public class Main {
                             inspectedNode.setH(Math.max((Math.abs(inspectedNode.getRow() - goal.getRow())), Math.abs(inspectedNode.getCol() - goal.getCol())));
                         }
                         openList.add(inspectedNode);
+                        frontier++;
                         if (current.getContent() != 'P') {
                             inspectedNode.setParent(current);
                         }
                     } else if (inspectedNode == goal) { // If the adjacent node ("inspectedNode") is the goal...
                         inspectedNode.setParent(current);
                         goals.remove(goal);
+                        frontier++;
+                        return goal;
+                    } else if (inspectedNode.getContent() == '.' || goals.contains(inspectedNode) || goals.contains(current)) {
+                        if (current.getContent() != 'P') {
+                            inspectedNode.setParent(current);
+                        }
+                        goals.add(goal);
+                        if (inspectedNode.getContent() == '.' || goals.contains(inspectedNode)) {
+                            goals.remove(inspectedNode);
+                            goal = inspectedNode;
+                        } else {
+                            goals.remove(current);
+                            goal = current;
+                        }
+                        frontier++;
                         return goal;
                     }
                 }
@@ -345,6 +358,7 @@ public class Main {
 
         openList.remove(candidateNode);
         closedList.add(candidateNode);
+        expandedNode++;
         candidateNode.setVisited(true);
 
         return candidateNode;
@@ -362,6 +376,7 @@ public class Main {
             System.out.println();
         }
         if (wait) {
+            System.out.print("Press [ENTER] to continue.");
             sc.nextLine();
         }
     }
